@@ -1,56 +1,68 @@
-// @dart=2.9
 import 'package:flutter/material.dart';
-import 'package:scrolling_years_calendar/scrolling_years_calendar.dart';
 
-void main() => runApp(MyApp());
+import 'calender/controllers/horizontal_calendar_controller.dart';
+import 'calender/horizontal_calendar.dart';
+
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      title: 'Horizontal Calender',
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
+      ),
+      home: const MyHomePage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  //List<DateTime> getHighlightedDates() {
-    // return List<DateTime>.generate(
-    //   10,
-    //   (int index) => DateTime.now().add(Duration(days: 10 * (index + 1))),
-    // );
- // }
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key,}) : super(key: key);
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final calendarController = HorizontalCalendarController(
+    minDate: DateTime.now(),
+    maxDate: DateTime.now().add(const Duration(days: 365)),
+    onRangeSelected: (firstDate, secondDate) {},
+    onDayTapped: (date) {},
+    onPreviousMinDateTapped: (date) {},
+    onAfterMaxDateTapped: (date) {},
+    weekdayStart: DateTime.monday,
+  );
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: SafeArea(
-        child: ScrollingYearsCalendar(
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime.now().subtract(const Duration(days: 1 * 30)),
-          lastDate: DateTime.now(),
-          currentDateColor: Colors.blue,
-          // highlightedDates: getHighlightedDates(),
-          //highlightedDateColor: Colors.deepOrange,
-          monthNames: const <String>[
-            'JANUARY',
-            'FEBRUARY',
-            'MARCH',
-            'APRIL',
-            'MAY',
-            'JUNE',
-            'JULY',
-            'AUGUST',
-            'SEPTEMBER',
-            'OCTOBER',
-            'NOVEMBER',
-            'DECEMBER',
-          ],
-          onMonthTap: (int year, int month) => print('Tapped $month/$year'),
-          monthTitleStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1),
-        ),
+      appBar: AppBar(
+        title: const Text("Horizontal Calender"),
+        centerTitle: true,
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(
+            width: width,
+            height: width * 1.3,
+            child: HorizontalCalendar(
+              calendarController: calendarController,
+              width: width,
+            ),
+          ),
+          const SizedBox(height: 50,),
+        ],
       ),
     );
   }
